@@ -3,15 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pega na minha e balança</title>
+    <title>Protótipo leitura de balança serial</title>
   </head>
   <body>
-    <button>Pega na minha e balança</button>
+    <button onclick="readPort()">Abrir porta</button>
+    <p id="show">0</p>
+
+    <button onclick="getWeight()">Obter peso</button>
+    <p id="show2">0</p>
   </body>
   <script>
-    if ("serial" in navigator) {
-      // console.log(navigator);
-      document.querySelector("button").addEventListener("click", async () => {
+    var str;
+    async function readPort() {
+      if ("serial" in navigator) {
+        const show = document.getElementById("show");
         const ports = await navigator.serial.getPorts();
         console.log(ports);
         // here fazer ports foreach port ; if port.getInfo === env.xxx
@@ -29,7 +34,7 @@
         } else {
           port = await navigator.serial.requestPort();
         }
-        
+
         await port.open({ baudRate: 9600 });
         const reader = port.readable.getReader();
         while (true) {
@@ -42,11 +47,18 @@
           // value is a Uint8Array.
           console.log(value);
 
-          var str = String.fromCharCode.apply(null, value);
+          str = String.fromCharCode.apply(null, value);
 
           console.log(str);
+          show.innerText = str;
         }
-      });
+      }
+    }
+
+    function getWeight() {
+      const show2 = document.getElementById("show2");
+
+      show2.innerText = str;
     }
   </script>
 </html>
